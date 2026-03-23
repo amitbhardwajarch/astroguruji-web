@@ -14,307 +14,292 @@
 
         body {
             margin: 0;
-            background: linear-gradient(135deg, #0b1220 0%, #1d3d8f 100%);
-            color: #fff;
+            background: #e9edf3;
+            color: #111;
             padding: 10px;
         }
 
-        .app {
-            max-width: 1500px;
+        .sheet {
+            max-width: 1400px;
             margin: 0 auto;
-            background: rgba(17, 24, 39, 0.94);
-            border-radius: 14px;
-            padding: 12px;
-            box-shadow: 0 0 22px rgba(0,0,0,0.35);
+            background: #fff;
+            border: 2px solid #222;
+            padding: 10px;
+        }
+
+        .header {
+            border-bottom: 2px solid #222;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            text-align: center;
         }
 
         .brand {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .brand-title {
-            font-size: 34px;
+            font-size: 30px;
             font-weight: 800;
-            background: linear-gradient(90deg, #ffd54a, #ff8a00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             letter-spacing: 1px;
         }
 
-        .brand-subtitle {
-            color: #cbd5f5;
-            font-size: 12px;
-            margin-top: 2px;
+        .subbrand {
+            font-size: 13px;
+            margin-top: 4px;
         }
 
-        .top-form {
+        .input-grid {
             display: grid;
-            grid-template-columns: 1.2fr 0.55fr 0.55fr 0.75fr 0.55fr 0.55fr 1fr 1fr 0.9fr;
+            grid-template-columns: 1.2fr 0.55fr 0.55fr 0.7fr 0.55fr 0.55fr 1fr 1fr 0.8fr;
             gap: 8px;
-            align-items: end;
-            margin-bottom: 10px;
-        }
-
-        .field {
-            text-align: left;
+            margin-top: 10px;
         }
 
         .field label {
             display: block;
             font-size: 11px;
-            color: #cbd5f5;
-            margin-bottom: 4px;
             font-weight: 700;
+            margin-bottom: 3px;
         }
 
         input, select, button {
             width: 100%;
-            padding: 10px 8px;
-            border: none;
-            border-radius: 8px;
+            border: 1px solid #444;
+            padding: 8px;
             font-size: 13px;
-            outline: none;
-        }
-
-        input, select {
-            background: #334155;
-            color: #fff;
+            background: #fff;
+            color: #111;
         }
 
         button {
-            background: linear-gradient(90deg, #ff8a00, #ffd54a);
-            color: #111827;
             font-weight: 800;
             cursor: pointer;
-            height: 38px;
+            background: #f5d26a;
         }
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1.05fr 1.05fr 1fr;
-            gap: 10px;
-        }
-
-        .panel {
-            background: #020817;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px;
+        .main-summary {
+            border: 1px solid #222;
             padding: 10px;
-            overflow: hidden;
-        }
-
-        .panel-title {
-            color: #ffd54a;
-            font-size: 14px;
-            font-weight: 800;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .summary-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 6px 18px;
         }
 
-        .summary-item {
-            background: #0f172a;
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 8px;
-            padding: 8px;
-            min-height: 58px;
-        }
-
-        .summary-k {
-            color: #93c5fd;
-            font-size: 10px;
-            margin-bottom: 4px;
-            font-weight: 700;
-        }
-
-        .summary-v {
-            color: #fff;
+        .summary-row {
+            display: grid;
+            grid-template-columns: 170px 10px 1fr;
             font-size: 13px;
+            padding: 2px 0;
+        }
+
+        .summary-label {
             font-weight: 700;
-            word-break: break-word;
+        }
+
+        .planet-table-box {
+            border: 1px solid #222;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-align: center;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 11px;
+            font-size: 12px;
         }
 
         th, td {
-            border: 1px solid rgba(255,255,255,0.10);
+            border: 1px solid #222;
             padding: 6px;
             text-align: left;
             vertical-align: top;
         }
 
         th {
-            background: #1e293b;
-            color: #ffd54a;
-            font-weight: 800;
-        }
-
-        .chart-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-        }
-
-        .chart-cell {
-            min-height: 62px;
-            background: #0f172a;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 8px;
-            padding: 6px;
-        }
-
-        .chart-sign {
-            color: #ffd54a;
-            font-size: 11px;
-            font-weight: 800;
-            margin-bottom: 4px;
-        }
-
-        .chart-content {
-            font-size: 11px;
-            line-height: 1.35;
-        }
-
-        .lagna-cell {
-            background: #3b2f00;
-            border-color: #ffd54a;
+            background: #f1f1f1;
         }
 
         .bottom-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-top: 10px;
+            align-items: start;
         }
 
-        .status-bar {
-            margin-top: 10px;
-            background: #0f172a;
-            color: #cbd5f5;
-            border-radius: 8px;
-            padding: 8px 10px;
-            font-size: 12px;
+        .chart-box, .dasa-box {
+            border: 1px solid #222;
+            padding: 10px;
+            min-height: 320px;
         }
 
-        .note {
-            margin-top: 6px;
-            color: #cbd5f5;
+        .rasi-chart {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+        }
+
+        .house {
+            border: 1px solid #222;
+            min-height: 70px;
+            padding: 4px;
             font-size: 11px;
+            position: relative;
+            background: #fff;
         }
 
-        @media (max-width: 1300px) {
-            .top-form {
+        .house-sign {
+            font-weight: 800;
+            font-size: 10px;
+            margin-bottom: 4px;
+        }
+
+        .lagna-house {
+            background: #fff7d6;
+        }
+
+        .dasa-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .status {
+            margin-top: 10px;
+            border: 1px solid #222;
+            padding: 8px;
+            font-size: 12px;
+            background: #fafafa;
+        }
+
+        .small-note {
+            font-size: 11px;
+            margin-top: 6px;
+        }
+
+        @media (max-width: 1200px) {
+            .input-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
-            .main-grid, .bottom-grid {
+
+            .bottom-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-row {
+                grid-template-columns: 130px 10px 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="app">
-        <div class="brand">
-            <div class="brand-title">ASTROGURUJI</div>
-            <div class="brand-subtitle">ANCIENT WISDOM • MODERN TECHNOLOGY</div>
+    <div class="sheet">
+        <div class="header">
+            <div class="brand">ASTROGURUJI</div>
+            <div class="subbrand">INSTANT HOROSCOPE DISPLAY</div>
+
+            <div class="input-grid">
+                <div class="field">
+                    <label>NAME</label>
+                    <input type="text" id="name" placeholder="ENTER NAME">
+                </div>
+
+                <div class="field">
+                    <label>DAY</label>
+                    <input type="number" id="day" placeholder="DD" min="1" max="31">
+                </div>
+
+                <div class="field">
+                    <label>MONTH</label>
+                    <input type="number" id="month" placeholder="MM" min="1" max="12">
+                </div>
+
+                <div class="field">
+                    <label>YEAR</label>
+                    <input type="number" id="year" placeholder="YYYY" min="1800" max="2100">
+                </div>
+
+                <div class="field">
+                    <label>HOUR</label>
+                    <input type="number" id="hour" placeholder="HH" min="0" max="23">
+                </div>
+
+                <div class="field">
+                    <label>MINUTE</label>
+                    <input type="number" id="minute" placeholder="MM" min="0" max="59">
+                </div>
+
+                <div class="field">
+                    <label>STATE</label>
+                    <select id="state" onchange="loadCities()">
+                        <option value="">SELECT STATE</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>CITY</label>
+                    <select id="city">
+                        <option value="">SELECT CITY</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>&nbsp;</label>
+                    <button onclick="calculateHoroscope()">SHOW HOROSCOPE</button>
+                </div>
+            </div>
         </div>
 
-        <div class="top-form">
-            <div class="field">
-                <label>NAME</label>
-                <input type="text" id="name" placeholder="ENTER NAME">
-            </div>
-
-            <div class="field">
-                <label>DAY</label>
-                <input type="number" id="day" placeholder="DD" min="1" max="31">
-            </div>
-
-            <div class="field">
-                <label>MONTH</label>
-                <input type="number" id="month" placeholder="MM" min="1" max="12">
-            </div>
-
-            <div class="field">
-                <label>YEAR</label>
-                <input type="number" id="year" placeholder="YYYY" min="1800" max="2100">
-            </div>
-
-            <div class="field">
-                <label>HOUR</label>
-                <input type="number" id="hour" placeholder="HH" min="0" max="23">
-            </div>
-
-            <div class="field">
-                <label>MINUTE</label>
-                <input type="number" id="minute" placeholder="MM" min="0" max="59">
-            </div>
-
-            <div class="field">
-                <label>STATE</label>
-                <select id="state" onchange="loadCities()">
-                    <option value="">SELECT STATE</option>
-                </select>
-            </div>
-
-            <div class="field">
-                <label>CITY</label>
-                <select id="city">
-                    <option value="">SELECT CITY</option>
-                </select>
-            </div>
-
-            <div class="field">
-                <label>&nbsp;</label>
-                <button onclick="calculateHoroscope()">GENERATE</button>
-            </div>
+        <div class="main-summary">
+            <div class="section-title">HOROSCOPE SUMMARY</div>
+            <div id="summaryPanel" class="summary-grid"></div>
         </div>
 
-        <div class="main-grid">
-            <div class="panel">
-                <div class="panel-title">HOROSCOPE SUMMARY</div>
-                <div id="summaryPanel" class="summary-grid"></div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-title">NINE PLANETS</div>
-                <div id="planetTable"></div>
-                <div class="note">NAKSHATRA / NAKSHATRA LORD WILL APPEAR WHEN BACKEND RETURNS THEM FOR EACH PLANET.</div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-title">RASI / SIGN CHART</div>
-                <div id="chartPanel" class="chart-grid"></div>
+        <div class="planet-table-box">
+            <div class="section-title">NINE PLANETS POSITION DETAILS</div>
+            <div id="planetTable"></div>
+            <div class="small-note">
+                NAKSHATRA AND NAKSHATRA LORD FOR EACH PLANET WILL APPEAR WHEN BACKEND RETURNS THOSE FIELDS.
             </div>
         </div>
 
         <div class="bottom-grid">
-            <div class="panel">
-                <div class="panel-title">CURRENT DASA / BALANCE</div>
+            <div class="chart-box">
+                <div class="section-title">RASI CHART</div>
+                <div id="chartPanel" class="rasi-chart"></div>
+            </div>
+
+            <div class="dasa-box">
+                <div class="section-title">DASA DETAILS</div>
                 <div id="dasaPanel"></div>
-            </div>
 
-            <div class="panel">
-                <div class="panel-title">MAHADASHA SEQUENCE</div>
-                <div id="mahadashaTable"></div>
+                <div style="margin-top: 14px;">
+                    <div class="section-title">MAHADASHA SEQUENCE</div>
+                    <div id="mahadashaTable"></div>
+                </div>
+
+                <div style="margin-top: 14px;">
+                    <div class="section-title">ANTARDASHA SEQUENCE</div>
+                    <div id="antardashaTable"></div>
+                </div>
             </div>
         </div>
 
-        <div class="panel" style="margin-top:10px;">
-            <div class="panel-title">ANTARDASHA SEQUENCE</div>
-            <div id="antardashaTable"></div>
-        </div>
-
-        <div id="statusBar" class="status-bar">READY.</div>
+        <div id="statusBar" class="status">READY.</div>
     </div>
 
     <script src="india_locations.js"></script>
@@ -406,7 +391,7 @@
             const currentMaha = getCurrentRange(data.mahadasha_sequence);
             const currentAntar = getCurrentRange(data.remaining_antardasha_sequence);
 
-            const items = [
+            const rows = [
                 ["NAME", personName || "N/A"],
                 ["DATE OF BIRTH", dob],
                 ["TIME OF BIRTH", tob],
@@ -416,21 +401,23 @@
                 ["NAKSHATRA", safeValue(data.core_result?.nakshatra)],
                 ["NAKSHATRA LORD", safeValue(data.core_result?.dasha_lord)],
                 ["BALANCE OF DASA", `${safeValue(data.core_result?.balance?.years, 0)}Y ${safeValue(data.core_result?.balance?.months, 0)}M ${safeValue(data.core_result?.balance?.days, 0)}D`],
-                ["CURRENT MAHADASHA", currentMaha ? `${currentMaha.lord}` : "N/A"],
-                ["CURRENT ANTARDASHA", currentAntar ? `${currentAntar.lord}` : "N/A"],
+                ["CURRENT MAHADASHA", currentMaha ? currentMaha.lord : "N/A"],
+                ["CURRENT ANTARDASHA", currentAntar ? currentAntar.lord : "N/A"],
                 ["MOON LONGITUDE", safeValue(data.core_result?.moon_longitude)]
             ];
 
-            return items.map(([k, v]) => `
-                <div class="summary-item">
-                    <div class="summary-k">${k}</div>
-                    <div class="summary-v">${v}</div>
+            return rows.map(([k, v]) => `
+                <div class="summary-row">
+                    <div class="summary-label">${k}</div>
+                    <div>:</div>
+                    <div>${v}</div>
                 </div>
             `).join("");
         }
 
         function renderPlanetTable(data) {
             const planets = data.graha_positions || {};
+
             const rows = Object.entries(planets).map(([planet, p]) => `
                 <tr>
                     <td>${planet}</td>
@@ -464,14 +451,9 @@
             const currentAntar = getCurrentRange(data.remaining_antardasha_sequence);
 
             return `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>FIELD</th>
-                            <th>VALUE</th>
-                        </tr>
-                    </thead>
+                <table class="dasa-table">
                     <tbody>
+                        <tr><th>FIELD</th><th>VALUE</th></tr>
                         <tr><td>PRESENT DASA RUNNING</td><td>${currentMaha ? currentMaha.lord : "N/A"}</td></tr>
                         <tr><td>CURRENT ANTARDASA</td><td>${currentAntar ? currentAntar.lord : "N/A"}</td></tr>
                         <tr><td>BALANCE OF VIMSHOTTARI DASA</td><td>${safeValue(data.core_result?.balance?.years, 0)}Y ${safeValue(data.core_result?.balance?.months, 0)}M ${safeValue(data.core_result?.balance?.days, 0)}D</td></tr>
@@ -543,9 +525,9 @@
                 const isLagna = content.includes("Lagna");
 
                 return `
-                    <div class="chart-cell ${isLagna ? "lagna-cell" : ""}">
-                        <div class="chart-sign">${sign}</div>
-                        <div class="chart-content">${content.length ? content.join(", ") : "-"}</div>
+                    <div class="house ${isLagna ? 'lagna-house' : ''}">
+                        <div class="house-sign">${sign}</div>
+                        <div>${content.length ? content.join(", ") : "-"}</div>
                     </div>
                 `;
             }).join("");
@@ -571,7 +553,7 @@
                 const tob = buildTob();
                 const birthPlace = `${city}, ${state}, INDIA`;
 
-                statusBar.textContent = "FETCHING COORDINATES...";
+                statusBar.textContent = "FETCHING LOCATION...";
                 const coords = await getCoordinates(city, state);
 
                 statusBar.textContent = "GENERATING HOROSCOPE...";
