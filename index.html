@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AstroGuruji</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            color: white;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            margin-top: 30px;
+            background: linear-gradient(90deg, #facc15, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: #cbd5f5;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: auto;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+        }
+
+        input {
+            background: #334155;
+            color: white;
+        }
+
+        button {
+            background: linear-gradient(90deg, #f97316, #facc15);
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: left;
+            background: #020617;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .result h3 {
+            color: #facc15;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="logo">🔮 AstroGuruji</div>
+    <div class="tagline">Ancient Wisdom • Modern Technology</div>
+
+    <div class="container">
+
+        <input type="date" id="dob">
+        <input type="time" id="tob">
+
+        <input type="text" id="city" placeholder="City (e.g. Gurgaon)">
+        <input type="text" id="state" placeholder="State (e.g. Haryana)">
+        <input type="text" id="country" placeholder="Country (e.g. India)">
+
+        <button onclick="calculate()">✨ Calculate Horoscope</button>
+
+        <div class="result" id="result"></div>
+
+    </div>
+
+<script>
+async function getCoordinates(city, state, country) {
+    let query = city + "," + state + "," + country;
+
+    let res = await fetch(
+        "https://nominatim.openstreetmap.org/search?format=json&q=" + query
+    );
+
+    let data = await res.json();
+
+    return {
+        lat: parseFloat(data[0].lat),
+        lon: parseFloat(data[0].lon)
+    };
+}
+
+async function calculate() {
+
+    let dob = document.getElementById("dob").value;
+    let tob = document.getElementById("tob").value;
+
+    let city = document.getElementById("city").value;
+    let state = document.getElementById("state").value;
+    let country = document.getElementById("country").value;
+
+    let resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = "🔄 Calculating...";
+
+    try {
+
+        let coords = await getCoordinates(city, state, country);
+
+        let response = await fetch("https://astrology-api-ng94.onrender.com/calculate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                dob: dob,
+                tob: tob,
+                timezone: 5.5,
+                lat: coords.lat,
+                lon: coords.lon
+            })
+        });
+
+        let data = await response.json();
+
+        resultDiv.innerHTML = `
+            <h3>🌟 Horoscope Result</h3>
+            <b>Moon Longitude:</b> ${data.moon_longitude}<br>
+            <b>Nakshatra:</b> ${data.nakshatra}<br>
+            <b>Dasha Lord:</b> ${data.dasha_lord}<br>
+            <b>Balance:</b> ${data.balance.years}y ${data.balance.months}m ${data.balance.days}d
+        `;
+
+    } catch (err) {
+        resultDiv.innerHTML = "❌ Error: " + err;
+    }
+}
+</script>
+
+</body>
+</html>
