@@ -10,12 +10,14 @@
             background: linear-gradient(135deg, #0f172a, #1e3a8a);
             color: white;
             text-align: center;
+            margin: 0;
+            padding: 20px;
         }
 
         .logo {
-            font-size: 36px;
+            font-size: 38px;
             font-weight: bold;
-            margin-top: 30px;
+            margin-top: 20px;
             background: linear-gradient(90deg, #facc15, #f97316);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -28,12 +30,17 @@
         }
 
         .container {
-            max-width: 420px;
+            max-width: 900px;
             margin: auto;
             padding: 20px;
-            background: rgba(30, 41, 59, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            background: rgba(30, 41, 59, 0.92);
+            border-radius: 16px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.45);
+        }
+
+        .form-box {
+            max-width: 420px;
+            margin: auto;
         }
 
         input, button {
@@ -43,6 +50,7 @@
             border-radius: 8px;
             border: none;
             font-size: 14px;
+            box-sizing: border-box;
         }
 
         input {
@@ -58,20 +66,106 @@
         }
 
         button:hover {
-            opacity: 0.9;
+            opacity: 0.92;
         }
 
         .result {
-            margin-top: 20px;
+            margin-top: 24px;
             text-align: left;
             background: #020617;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 18px;
+            border-radius: 10px;
             font-size: 14px;
+            line-height: 1.6;
         }
 
-        .result h3 {
+        .section {
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h3 {
             color: #facc15;
+            margin-bottom: 10px;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 20px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .mini-card {
+            background: #0f172a;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .mini-card b {
+            color: #facc15;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+
+        th, td {
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 8px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: #1e293b;
+            color: #facc15;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .chart-box {
+            background: #0f172a;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 70px;
+        }
+
+        .chart-box .sign {
+            color: #facc15;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .muted {
+            color: #cbd5f5;
+        }
+
+        @media (max-width: 700px) {
+            .two-col,
+            .card-grid,
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -83,32 +177,30 @@
 
     <div class="container">
 
-        <input type="date" id="dob">
-        <input type="time" id="tob">
+        <div class="form-box">
+            <input type="date" id="dob">
+            <input type="time" id="tob">
+            <input type="text" id="city" placeholder="City (e.g. Gurgaon)">
+            <input type="text" id="state" placeholder="State (e.g. Haryana)">
+            <input type="text" id="country" placeholder="Country (e.g. India)" value="India">
+            <button onclick="calculate()">✨ Calculate Horoscope</button>
+        </div>
 
-        <input type="text" id="city" placeholder="City (e.g. Gurgaon)">
-        <input type="text" id="state" placeholder="State (e.g. Haryana)">
-        <input type="text" id="country" placeholder="Country (e.g. India)">
-
-        <button onclick="calculate()">✨ Calculate Horoscope</button>
-
-        <div class="result" id="result"></div>
+        <div class="result" id="result">Please enter details and click Calculate Horoscope.</div>
 
     </div>
 
 <script>
-
 async function getCoordinates(city, state, country) {
-    let query = city + "," + state + "," + country;
-
-    let res = await fetch(
-        "https://nominatim.openstreetmap.org/search?format=json&q=" + query
+    const query = `${city}, ${state}, ${country}`;
+    const res = await fetch(
+        "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(query)
     );
 
-    let data = await res.json();
+    const data = await res.json();
 
     if (!data || data.length === 0) {
-        throw new Error("Location not found. Please check city/state.");
+        throw new Error("Location not found. Please check city/state/country.");
     }
 
     return {
@@ -117,23 +209,121 @@ async function getCoordinates(city, state, country) {
     };
 }
 
+function renderGrahaPositions(grahaPositions) {
+    const rows = Object.entries(grahaPositions).map(([graha, data]) => `
+        <tr>
+            <td>${graha}</td>
+            <td>${data.sign}</td>
+            <td>${data.degree_in_sign}°</td>
+            <td>${data.longitude}°</td>
+        </tr>
+    `).join("");
+
+    return `
+        <div class="section">
+            <h3>🪐 Graha Positions</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Graha</th>
+                        <th>Sign</th>
+                        <th>Degree in Sign</th>
+                        <th>Absolute Longitude</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        </div>
+    `;
+}
+
+function renderMahadasha(mahadashaSequence) {
+    const rows = mahadashaSequence.map(item => `
+        <tr>
+            <td>${item.lord}</td>
+            <td>${item.start}</td>
+            <td>${item.end}</td>
+        </tr>
+    `).join("");
+
+    return `
+        <div class="section">
+            <h3>📜 Mahadasha Sequence</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lord</th>
+                        <th>Start</th>
+                        <th>End</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        </div>
+    `;
+}
+
+function renderAntardasha(antardashaSequence) {
+    const rows = antardashaSequence.map(item => `
+        <tr>
+            <td>${item.lord}</td>
+            <td>${item.start}</td>
+            <td>${item.end}</td>
+        </tr>
+    `).join("");
+
+    return `
+        <div class="section">
+            <h3>⏳ Remaining Antardasha Sequence At Birth</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lord</th>
+                        <th>Start</th>
+                        <th>End</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        </div>
+    `;
+}
+
+function renderChart(chart) {
+    const signOrder = [
+        "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+        "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+    ];
+
+    const boxes = signOrder.map(sign => `
+        <div class="chart-box">
+            <div class="sign">${sign}</div>
+            <div>${chart[sign] && chart[sign].length ? chart[sign].join(", ") : "-"}</div>
+        </div>
+    `).join("");
+
+    return `
+        <div class="section">
+            <h3>🧭 Sign-wise Chart Placement</h3>
+            <div class="chart-grid">${boxes}</div>
+        </div>
+    `;
+}
+
 async function calculate() {
+    const dob = document.getElementById("dob").value;
+    const tob = document.getElementById("tob").value;
+    const city = document.getElementById("city").value.trim();
+    const state = document.getElementById("state").value.trim();
+    const country = document.getElementById("country").value.trim();
 
-    let dob = document.getElementById("dob").value;
-    let tob = document.getElementById("tob").value;
-
-    let city = document.getElementById("city").value;
-    let state = document.getElementById("state").value;
-    let country = document.getElementById("country").value;
-
-    let resultDiv = document.getElementById("result");
+    const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = "🔄 Calculating...";
 
     try {
+        const coords = await getCoordinates(city, state, country);
 
-        let coords = await getCoordinates(city, state, country);
-
-        let response = await fetch("https://astrology-api-ng94.onrender.com/calculate", {
+        const response = await fetch("https://astrology-api-ng94.onrender.com/calculate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -147,31 +337,43 @@ async function calculate() {
             })
         });
 
-        let data = await response.json();
+        const data = await response.json();
 
         if (!data.core_result) {
             throw new Error("Invalid response from server");
         }
 
         resultDiv.innerHTML = `
-            <h3>🌟 Horoscope Result</h3>
-            <b>Moon Longitude:</b> ${data.core_result.moon_longitude}<br>
-            <b>Nakshatra:</b> ${data.core_result.nakshatra}<br>
-            <b>Dasha Lord:</b> ${data.core_result.dasha_lord}<br>
-            <b>Balance:</b> ${data.core_result.balance.years}y 
-                            ${data.core_result.balance.months}m 
-                            ${data.core_result.balance.days}d<br><br>
+            <div class="section">
+                <h3>🌟 Core Result</h3>
+                <div class="two-col">
+                    <div><b>Moon Longitude:</b> ${data.core_result.moon_longitude}</div>
+                    <div><b>Nakshatra:</b> ${data.core_result.nakshatra}</div>
+                    <div><b>Dasha Lord:</b> ${data.core_result.dasha_lord}</div>
+                    <div><b>Balance:</b> ${data.core_result.balance.years}y ${data.core_result.balance.months}m ${data.core_result.balance.days}d</div>
+                </div>
+            </div>
 
-            <h3>🧭 Lagna</h3>
-            <b>Sign:</b> ${data.lagna.sign}<br>
-            <b>Degree:</b> ${data.lagna.degree_in_sign}°
+            <div class="section">
+                <h3>🧭 Lagna</h3>
+                <div class="two-col">
+                    <div><b>Sign:</b> ${data.lagna.sign}</div>
+                    <div><b>Degree:</b> ${data.lagna.degree_in_sign}°</div>
+                    <div><b>Absolute Longitude:</b> ${data.lagna.longitude}°</div>
+                    <div><b>Location Used:</b> ${city}, ${state}, ${country}</div>
+                </div>
+            </div>
+
+            ${renderGrahaPositions(data.graha_positions)}
+            ${renderMahadasha(data.mahadasha_sequence)}
+            ${renderAntardasha(data.remaining_antardasha_sequence)}
+            ${renderChart(data.chart)}
         `;
 
     } catch (err) {
         resultDiv.innerHTML = "❌ Error: " + err.message;
     }
 }
-
 </script>
 
 </body>
