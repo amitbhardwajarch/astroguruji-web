@@ -37,11 +37,6 @@
             border-radius: 16px;
         }
 
-        .form-box {
-            max-width: 420px;
-            margin: auto;
-        }
-
         input, select, button {
             width: 100%;
             padding: 12px;
@@ -69,6 +64,15 @@
             background: #020617;
             padding: 15px;
             border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        h3 {
+            color: #facc15;
+        }
+
+        hr {
+            border: 0.5px solid #334155;
         }
     </style>
 </head>
@@ -80,20 +84,18 @@
 
 <div class="container">
 
-    <div class="form-box">
-        <input type="date" id="dob">
-        <input type="time" id="tob">
+    <input type="date" id="dob">
+    <input type="time" id="tob">
 
-        <select id="state" onchange="loadCities()">
-            <option>Select State</option>
-        </select>
+    <select id="state" onchange="loadCities()">
+        <option>Select State</option>
+    </select>
 
-        <select id="city">
-            <option>Select City</option>
-        </select>
+    <select id="city">
+        <option>Select City</option>
+    </select>
 
-        <button onclick="calculate()">✨ Calculate Horoscope</button>
-    </div>
+    <button onclick="calculate()">✨ Calculate Horoscope</button>
 
     <div class="result" id="result">Loading India data...</div>
 
@@ -104,28 +106,20 @@
 const API_URL = "https://astrology-api-ng94.onrender.com/calculate";
 let allStates = [];
 
-// 🚀 Load full India dataset
 async function loadData() {
-    try {
-        const res = await fetch("https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/countries+states+cities.json");
-        const data = await res.json();
+    const res = await fetch("https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/countries+states+cities.json");
+    const data = await res.json();
 
-        const india = data.find(c => c.name === "India");
-        allStates = india.states;
+    const india = data.find(c => c.name === "India");
+    allStates = india.states;
 
-        loadStates();
+    loadStates();
 
-        document.getElementById("result").innerHTML = "Ready ✔ Select your details";
-
-    } catch (err) {
-        document.getElementById("result").innerHTML = "Error loading India data";
-    }
+    document.getElementById("result").innerHTML = "Ready ✔";
 }
 
-// Load states
 function loadStates() {
     const stateSelect = document.getElementById("state");
-    stateSelect.innerHTML = '<option>Select State</option>';
 
     allStates.forEach(state => {
         let opt = document.createElement("option");
@@ -135,7 +129,6 @@ function loadStates() {
     });
 }
 
-// Load cities
 function loadCities() {
     const stateName = document.getElementById("state").value;
     const citySelect = document.getElementById("city");
@@ -153,7 +146,6 @@ function loadCities() {
     });
 }
 
-// Get coordinates
 async function getCoordinates(city, state) {
     const query = `${city}, ${state}, India`;
 
@@ -171,8 +163,8 @@ async function getCoordinates(city, state) {
     };
 }
 
-// Calculate horoscope
 async function calculate() {
+
     const dob = document.getElementById("dob").value;
     const tob = document.getElementById("tob").value;
     const state = document.getElementById("state").value;
@@ -182,6 +174,7 @@ async function calculate() {
     resultDiv.innerHTML = "🔄 Calculating...";
 
     try {
+
         const coords = await getCoordinates(city, state);
 
         const res = await fetch(API_URL, {
@@ -198,13 +191,48 @@ async function calculate() {
         const data = await res.json();
 
         resultDiv.innerHTML = `
-            <h3>🌟 Result</h3>
+            <h3>🌟 Core Result</h3>
             Moon Longitude: ${data.core_result.moon_longitude}<br>
             Nakshatra: ${data.core_result.nakshatra}<br>
             Dasha Lord: ${data.core_result.dasha_lord}<br>
             Balance: ${data.core_result.balance.years}y 
                      ${data.core_result.balance.months}m 
                      ${data.core_result.balance.days}d
+
+            <hr>
+
+            <h3>🧭 Lagna</h3>
+            Sign: ${data.lagna.sign}<br>
+            Degree: ${data.lagna.degree_in_sign}°<br>
+            Absolute: ${data.lagna.longitude}°
+
+            <hr>
+
+            <h3>🪐 Graha Positions</h3>
+            ${Object.entries(data.graha_positions).map(([g,v]) =>
+                `${g}: ${v.sign} ${v.degree_in_sign}° (${v.longitude}°)`
+            ).join("<br>")}
+
+            <hr>
+
+            <h3>📜 Mahadasha</h3>
+            ${data.mahadasha_sequence.map(d =>
+                `${d.lord}: ${d.start} → ${d.end}`
+            ).join("<br>")}
+
+            <hr>
+
+            <h3>⏳ Antardasha</h3>
+            ${data.remaining_antardasha_sequence.map(d =>
+                `${d.lord}: ${d.start} → ${d.end}`
+            ).join("<br>")}
+
+            <hr>
+
+            <h3>🧭 Chart Placement</h3>
+            ${Object.entries(data.chart).map(([sign, planets]) =>
+                `${sign}: ${planets.length ? planets.join(", ") : "-"}`
+            ).join("<br>")}
         `;
 
     } catch (e) {
@@ -212,7 +240,6 @@ async function calculate() {
     }
 }
 
-// Load on start
 window.onload = loadData;
 
 </script>
