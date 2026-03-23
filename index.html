@@ -43,7 +43,7 @@
             margin: auto;
         }
 
-        input, button {
+        input, select, button {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
@@ -53,7 +53,7 @@
             box-sizing: border-box;
         }
 
-        input {
+        input, select {
             background: #334155;
             color: white;
         }
@@ -100,23 +100,6 @@
             gap: 8px 20px;
         }
 
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .mini-card {
-            background: #0f172a;
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 8px;
-            padding: 10px;
-        }
-
-        .mini-card b {
-            color: #facc15;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -156,13 +139,14 @@
             margin-bottom: 6px;
         }
 
-        .muted {
+        .helper {
             color: #cbd5f5;
+            font-size: 13px;
+            margin-top: 8px;
         }
 
         @media (max-width: 700px) {
             .two-col,
-            .card-grid,
             .chart-grid {
                 grid-template-columns: 1fr;
             }
@@ -180,201 +164,271 @@
         <div class="form-box">
             <input type="date" id="dob">
             <input type="time" id="tob">
-            <input type="text" id="city" placeholder="City (e.g. Gurgaon)">
-            <input type="text" id="state" placeholder="State (e.g. Haryana)">
-            <input type="text" id="country" placeholder="Country (e.g. India)" value="India">
+
+            <select id="state" onchange="loadDistricts()">
+                <option value="">Select State</option>
+            </select>
+
+            <select id="district" onchange="loadCities()">
+                <option value="">Select District</option>
+            </select>
+
+            <select id="city">
+                <option value="">Select City</option>
+            </select>
+
             <button onclick="calculate()">✨ Calculate Horoscope</button>
+            <div class="helper">Country is fixed as India for this MVP.</div>
         </div>
 
         <div class="result" id="result">Please enter details and click Calculate Horoscope.</div>
 
     </div>
 
-<script>
-async function getCoordinates(city, state, country) {
-    const query = `${city}, ${state}, ${country}`;
-    const res = await fetch(
-        "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(query)
-    );
+    <script src="india_locations.js"></script>
+    <script>
+        const API_URL = "https://astrology-api-ng94.onrender.com/calculate";
+        const COUNTRY_NAME = "India";
 
-    const data = await res.json();
+        function loadStates() {
+            const stateSelect = document.getElementById("state");
+            stateSelect.innerHTML = '<option value="">Select State</option>';
 
-    if (!data || data.length === 0) {
-        throw new Error("Location not found. Please check city/state/country.");
-    }
-
-    return {
-        lat: parseFloat(data[0].lat),
-        lon: parseFloat(data[0].lon)
-    };
-}
-
-function renderGrahaPositions(grahaPositions) {
-    const rows = Object.entries(grahaPositions).map(([graha, data]) => `
-        <tr>
-            <td>${graha}</td>
-            <td>${data.sign}</td>
-            <td>${data.degree_in_sign}°</td>
-            <td>${data.longitude}°</td>
-        </tr>
-    `).join("");
-
-    return `
-        <div class="section">
-            <h3>🪐 Graha Positions</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Graha</th>
-                        <th>Sign</th>
-                        <th>Degree in Sign</th>
-                        <th>Absolute Longitude</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>
-        </div>
-    `;
-}
-
-function renderMahadasha(mahadashaSequence) {
-    const rows = mahadashaSequence.map(item => `
-        <tr>
-            <td>${item.lord}</td>
-            <td>${item.start}</td>
-            <td>${item.end}</td>
-        </tr>
-    `).join("");
-
-    return `
-        <div class="section">
-            <h3>📜 Mahadasha Sequence</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Lord</th>
-                        <th>Start</th>
-                        <th>End</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>
-        </div>
-    `;
-}
-
-function renderAntardasha(antardashaSequence) {
-    const rows = antardashaSequence.map(item => `
-        <tr>
-            <td>${item.lord}</td>
-            <td>${item.start}</td>
-            <td>${item.end}</td>
-        </tr>
-    `).join("");
-
-    return `
-        <div class="section">
-            <h3>⏳ Remaining Antardasha Sequence At Birth</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Lord</th>
-                        <th>Start</th>
-                        <th>End</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>
-        </div>
-    `;
-}
-
-function renderChart(chart) {
-    const signOrder = [
-        "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
-        "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
-    ];
-
-    const boxes = signOrder.map(sign => `
-        <div class="chart-box">
-            <div class="sign">${sign}</div>
-            <div>${chart[sign] && chart[sign].length ? chart[sign].join(", ") : "-"}</div>
-        </div>
-    `).join("");
-
-    return `
-        <div class="section">
-            <h3>🧭 Sign-wise Chart Placement</h3>
-            <div class="chart-grid">${boxes}</div>
-        </div>
-    `;
-}
-
-async function calculate() {
-    const dob = document.getElementById("dob").value;
-    const tob = document.getElementById("tob").value;
-    const city = document.getElementById("city").value.trim();
-    const state = document.getElementById("state").value.trim();
-    const country = document.getElementById("country").value.trim();
-
-    const resultDiv = document.getElementById("result");
-    resultDiv.innerHTML = "🔄 Calculating...";
-
-    try {
-        const coords = await getCoordinates(city, state, country);
-
-        const response = await fetch("https://astrology-api-ng94.onrender.com/calculate", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                dob: dob,
-                tob: tob,
-                tz: 5.5,
-                lat: coords.lat,
-                lon: coords.lon
-            })
-        });
-
-        const data = await response.json();
-
-        if (!data.core_result) {
-            throw new Error("Invalid response from server");
+            const states = Object.keys(INDIA_LOCATIONS).sort();
+            for (const state of states) {
+                const option = document.createElement("option");
+                option.value = state;
+                option.textContent = state;
+                stateSelect.appendChild(option);
+            }
         }
 
-        resultDiv.innerHTML = `
-            <div class="section">
-                <h3>🌟 Core Result</h3>
-                <div class="two-col">
-                    <div><b>Moon Longitude:</b> ${data.core_result.moon_longitude}</div>
-                    <div><b>Nakshatra:</b> ${data.core_result.nakshatra}</div>
-                    <div><b>Dasha Lord:</b> ${data.core_result.dasha_lord}</div>
-                    <div><b>Balance:</b> ${data.core_result.balance.years}y ${data.core_result.balance.months}m ${data.core_result.balance.days}d</div>
+        function loadDistricts() {
+            const state = document.getElementById("state").value;
+            const districtSelect = document.getElementById("district");
+            const citySelect = document.getElementById("city");
+
+            districtSelect.innerHTML = '<option value="">Select District</option>';
+            citySelect.innerHTML = '<option value="">Select City</option>';
+
+            if (!state || !INDIA_LOCATIONS[state]) return;
+
+            const districts = Object.keys(INDIA_LOCATIONS[state]).sort();
+            for (const district of districts) {
+                const option = document.createElement("option");
+                option.value = district;
+                option.textContent = district;
+                districtSelect.appendChild(option);
+            }
+        }
+
+        function loadCities() {
+            const state = document.getElementById("state").value;
+            const district = document.getElementById("district").value;
+            const citySelect = document.getElementById("city");
+
+            citySelect.innerHTML = '<option value="">Select City</option>';
+
+            if (!state || !district || !INDIA_LOCATIONS[state] || !INDIA_LOCATIONS[state][district]) return;
+
+            const cities = INDIA_LOCATIONS[state][district].sort();
+            for (const city of cities) {
+                const option = document.createElement("option");
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            }
+        }
+
+        async function getCoordinates(city, district, state) {
+            const query = `${city}, ${district}, ${state}, ${COUNTRY_NAME}`;
+            const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(query);
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (!data || data.length === 0) {
+                throw new Error("Coordinates not found for selected city.");
+            }
+
+            return {
+                lat: parseFloat(data[0].lat),
+                lon: parseFloat(data[0].lon)
+            };
+        }
+
+        function renderGrahaPositions(grahaPositions) {
+            const rows = Object.entries(grahaPositions).map(([graha, data]) => `
+                <tr>
+                    <td>${graha}</td>
+                    <td>${data.sign}</td>
+                    <td>${data.degree_in_sign}°</td>
+                    <td>${data.longitude}°</td>
+                </tr>
+            `).join("");
+
+            return `
+                <div class="section">
+                    <h3>🪐 Graha Positions</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Graha</th>
+                                <th>Sign</th>
+                                <th>Degree in Sign</th>
+                                <th>Absolute Longitude</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
                 </div>
-            </div>
+            `;
+        }
 
-            <div class="section">
-                <h3>🧭 Lagna</h3>
-                <div class="two-col">
-                    <div><b>Sign:</b> ${data.lagna.sign}</div>
-                    <div><b>Degree:</b> ${data.lagna.degree_in_sign}°</div>
-                    <div><b>Absolute Longitude:</b> ${data.lagna.longitude}°</div>
-                    <div><b>Location Used:</b> ${city}, ${state}, ${country}</div>
+        function renderMahadasha(mahadashaSequence) {
+            const rows = mahadashaSequence.map(item => `
+                <tr>
+                    <td>${item.lord}</td>
+                    <td>${item.start}</td>
+                    <td>${item.end}</td>
+                </tr>
+            `).join("");
+
+            return `
+                <div class="section">
+                    <h3>📜 Mahadasha Sequence</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Lord</th>
+                                <th>Start</th>
+                                <th>End</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
                 </div>
-            </div>
+            `;
+        }
 
-            ${renderGrahaPositions(data.graha_positions)}
-            ${renderMahadasha(data.mahadasha_sequence)}
-            ${renderAntardasha(data.remaining_antardasha_sequence)}
-            ${renderChart(data.chart)}
-        `;
+        function renderAntardasha(antardashaSequence) {
+            const rows = antardashaSequence.map(item => `
+                <tr>
+                    <td>${item.lord}</td>
+                    <td>${item.start}</td>
+                    <td>${item.end}</td>
+                </tr>
+            `).join("");
 
-    } catch (err) {
-        resultDiv.innerHTML = "❌ Error: " + err.message;
-    }
-}
-</script>
+            return `
+                <div class="section">
+                    <h3>⏳ Remaining Antardasha Sequence At Birth</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Lord</th>
+                                <th>Start</th>
+                                <th>End</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderChart(chart) {
+            const signOrder = [
+                "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+                "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+            ];
+
+            const boxes = signOrder.map(sign => `
+                <div class="chart-box">
+                    <div class="sign">${sign}</div>
+                    <div>${chart[sign] && chart[sign].length ? chart[sign].join(", ") : "-"}</div>
+                </div>
+            `).join("");
+
+            return `
+                <div class="section">
+                    <h3>🧭 Sign-wise Chart Placement</h3>
+                    <div class="chart-grid">${boxes}</div>
+                </div>
+            `;
+        }
+
+        async function calculate() {
+            const dob = document.getElementById("dob").value;
+            const tob = document.getElementById("tob").value;
+            const state = document.getElementById("state").value;
+            const district = document.getElementById("district").value;
+            const city = document.getElementById("city").value;
+
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "🔄 Calculating...";
+
+            try {
+                if (!dob || !tob || !state || !district || !city) {
+                    throw new Error("Please select DOB, Time, State, District, and City.");
+                }
+
+                const coords = await getCoordinates(city, district, state);
+
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        dob: dob,
+                        tob: tob,
+                        tz: 5.5,
+                        lat: coords.lat,
+                        lon: coords.lon
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!data.core_result) {
+                    throw new Error("Invalid response from server.");
+                }
+
+                resultDiv.innerHTML = `
+                    <div class="section">
+                        <h3>🌟 Core Result</h3>
+                        <div class="two-col">
+                            <div><b>Moon Longitude:</b> ${data.core_result.moon_longitude}</div>
+                            <div><b>Nakshatra:</b> ${data.core_result.nakshatra}</div>
+                            <div><b>Dasha Lord:</b> ${data.core_result.dasha_lord}</div>
+                            <div><b>Balance:</b> ${data.core_result.balance.years}y ${data.core_result.balance.months}m ${data.core_result.balance.days}d</div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>🧭 Lagna</h3>
+                        <div class="two-col">
+                            <div><b>Sign:</b> ${data.lagna.sign}</div>
+                            <div><b>Degree:</b> ${data.lagna.degree_in_sign}°</div>
+                            <div><b>Absolute Longitude:</b> ${data.lagna.longitude}°</div>
+                            <div><b>Birth Place:</b> ${city}, ${district}, ${state}, India</div>
+                        </div>
+                    </div>
+
+                    ${renderGrahaPositions(data.graha_positions)}
+                    ${renderMahadasha(data.mahadasha_sequence)}
+                    ${renderAntardasha(data.remaining_antardasha_sequence)}
+                    ${renderChart(data.chart)}
+                `;
+
+            } catch (error) {
+                resultDiv.innerHTML = "❌ Error: " + error.message;
+            }
+        }
+
+        window.onload = loadIndiaData;
+    </script>
 
 </body>
 </html>
