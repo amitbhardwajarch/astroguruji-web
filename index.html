@@ -1,600 +1,296 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ASTROGURUJI</title>
+<meta charset="UTF-8">
+<title>ASTROGURUJI</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            text-transform: uppercase;
-            font-family: Arial, sans-serif;
-        }
+<style>
+body {
+    font-family: Arial;
+    background: #f2f2f2;
+    margin: 0;
+    text-transform: uppercase;
+}
 
-        body {
-            margin: 0;
-            background: #e9edf3;
-            color: #111;
-            padding: 10px;
-        }
+.container {
+    width: 1200px;
+    margin: 10px auto;
+    background: white;
+    border: 2px solid black;
+    padding: 10px;
+}
 
-        .sheet {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #fff;
-            border: 2px solid #222;
-            padding: 10px;
-        }
+/* HEADER */
+.header {
+    text-align: center;
+    border-bottom: 2px solid black;
+    padding-bottom: 5px;
+}
 
-        .header {
-            border-bottom: 2px solid #222;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+}
 
-        .brand {
-            font-size: 30px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
+/* INPUT */
+.input-row {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
 
-        .subbrand {
-            font-size: 13px;
-            margin-top: 4px;
-        }
+input, select {
+    padding: 6px;
+    border: 1px solid black;
+}
 
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 0.55fr 0.55fr 0.7fr 0.55fr 0.55fr 1fr 1fr 0.8fr;
-            gap: 8px;
-            margin-top: 10px;
-        }
+button {
+    background: gold;
+    border: 1px solid black;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        .field label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            margin-bottom: 3px;
-        }
+/* SUMMARY */
+.summary {
+    border: 1px solid black;
+    margin-top: 10px;
+    padding: 5px;
+}
 
-        input, select, button {
-            width: 100%;
-            border: 1px solid #444;
-            padding: 8px;
-            font-size: 13px;
-            background: #fff;
-            color: #111;
-        }
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
 
-        button {
-            font-weight: 800;
-            cursor: pointer;
-            background: #f5d26a;
-        }
+.summary-row {
+    display: flex;
+}
 
-        .main-summary {
-            border: 1px solid #222;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
+.summary-row div:first-child {
+    width: 160px;
+    font-weight: bold;
+}
 
-        .summary-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px 18px;
-        }
+/* TABLE */
+.table-box {
+    border: 1px solid black;
+    margin-top: 10px;
+}
 
-        .summary-row {
-            display: grid;
-            grid-template-columns: 170px 10px 1fr;
-            font-size: 13px;
-            padding: 2px 0;
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        .summary-label {
-            font-weight: 700;
-        }
+th, td {
+    border: 1px solid black;
+    padding: 4px;
+    font-size: 12px;
+}
 
-        .planet-table-box {
-            border: 1px solid #222;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
+/* BOTTOM */
+.bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
 
-        .section-title {
-            font-size: 15px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            text-align: center;
-        }
+/* CHART */
+.chart {
+    border: 1px solid black;
+    padding: 5px;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
 
-        th, td {
-            border: 1px solid #222;
-            padding: 6px;
-            text-align: left;
-            vertical-align: top;
-        }
+.house {
+    border: 1px solid black;
+    height: 70px;
+    font-size: 11px;
+    padding: 3px;
+}
 
-        th {
-            background: #f1f1f1;
-        }
+.lagna {
+    background: #ffe9a3;
+}
 
-        .bottom-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            align-items: start;
-        }
+/* DASA */
+.dasa {
+    border: 1px solid black;
+    padding: 5px;
+}
 
-        .chart-box, .dasa-box {
-            border: 1px solid #222;
-            padding: 10px;
-            min-height: 320px;
-        }
-
-        .rasi-chart {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 4px;
-        }
-
-        .house {
-            border: 1px solid #222;
-            min-height: 70px;
-            padding: 4px;
-            font-size: 11px;
-            position: relative;
-            background: #fff;
-        }
-
-        .house-sign {
-            font-weight: 800;
-            font-size: 10px;
-            margin-bottom: 4px;
-        }
-
-        .lagna-house {
-            background: #fff7d6;
-        }
-
-        .dasa-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            margin-top: 6px;
-        }
-
-        .status {
-            margin-top: 10px;
-            border: 1px solid #222;
-            padding: 8px;
-            font-size: 12px;
-            background: #fafafa;
-        }
-
-        .small-note {
-            font-size: 11px;
-            margin-top: 6px;
-        }
-
-        @media (max-width: 1200px) {
-            .input-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .bottom-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 800px) {
-            .summary-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .summary-row {
-                grid-template-columns: 130px 10px 1fr;
-            }
-        }
-    </style>
+</style>
 </head>
+
 <body>
-    <div class="sheet">
-        <div class="header">
-            <div class="brand">ASTROGURUJI</div>
-            <div class="subbrand">INSTANT HOROSCOPE DISPLAY</div>
 
-            <div class="input-grid">
-                <div class="field">
-                    <label>NAME</label>
-                    <input type="text" id="name" placeholder="ENTER NAME">
-                </div>
+<div class="container">
 
-                <div class="field">
-                    <label>DAY</label>
-                    <input type="number" id="day" placeholder="DD" min="1" max="31">
-                </div>
+<div class="header">
+    <h1>ASTROGURUJI</h1>
+    <div>INSTANT HOROSCOPE DISPLAY</div>
+</div>
 
-                <div class="field">
-                    <label>MONTH</label>
-                    <input type="number" id="month" placeholder="MM" min="1" max="12">
-                </div>
+<div class="input-row">
+    <input id="name" placeholder="NAME">
+    <input id="day" placeholder="DD">
+    <input id="month" placeholder="MM">
+    <input id="year" placeholder="YYYY">
+    <input id="hour" placeholder="HH">
+    <input id="minute" placeholder="MM">
 
-                <div class="field">
-                    <label>YEAR</label>
-                    <input type="number" id="year" placeholder="YYYY" min="1800" max="2100">
-                </div>
+    <select id="state" onchange="loadCities()"></select>
+    <select id="city"></select>
 
-                <div class="field">
-                    <label>HOUR</label>
-                    <input type="number" id="hour" placeholder="HH" min="0" max="23">
-                </div>
+    <button onclick="calculate()">SHOW</button>
+</div>
 
-                <div class="field">
-                    <label>MINUTE</label>
-                    <input type="number" id="minute" placeholder="MM" min="0" max="59">
-                </div>
+<div class="summary">
+    <b>HOROSCOPE SUMMARY</b>
+    <div id="summary" class="summary-grid"></div>
+</div>
 
-                <div class="field">
-                    <label>STATE</label>
-                    <select id="state" onchange="loadCities()">
-                        <option value="">SELECT STATE</option>
-                    </select>
-                </div>
+<div class="table-box">
+    <b>NINE PLANETS POSITION</b>
+    <div id="planets"></div>
+</div>
 
-                <div class="field">
-                    <label>CITY</label>
-                    <select id="city">
-                        <option value="">SELECT CITY</option>
-                    </select>
-                </div>
+<div class="bottom">
 
-                <div class="field">
-                    <label>&nbsp;</label>
-                    <button onclick="calculateHoroscope()">SHOW HOROSCOPE</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="main-summary">
-            <div class="section-title">HOROSCOPE SUMMARY</div>
-            <div id="summaryPanel" class="summary-grid"></div>
-        </div>
-
-        <div class="planet-table-box">
-            <div class="section-title">NINE PLANETS POSITION DETAILS</div>
-            <div id="planetTable"></div>
-            <div class="small-note">
-                NAKSHATRA AND NAKSHATRA LORD FOR EACH PLANET WILL APPEAR WHEN BACKEND RETURNS THOSE FIELDS.
-            </div>
-        </div>
-
-        <div class="bottom-grid">
-            <div class="chart-box">
-                <div class="section-title">RASI CHART</div>
-                <div id="chartPanel" class="rasi-chart"></div>
-            </div>
-
-            <div class="dasa-box">
-                <div class="section-title">DASA DETAILS</div>
-                <div id="dasaPanel"></div>
-
-                <div style="margin-top: 14px;">
-                    <div class="section-title">MAHADASHA SEQUENCE</div>
-                    <div id="mahadashaTable"></div>
-                </div>
-
-                <div style="margin-top: 14px;">
-                    <div class="section-title">ANTARDASHA SEQUENCE</div>
-                    <div id="antardashaTable"></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="statusBar" class="status">READY.</div>
+    <div class="chart">
+        <b>RASI CHART</b>
+        <div id="chart" class="chart-grid"></div>
     </div>
 
-    <script src="india_locations.js"></script>
-    <script>
-        const API_URL = "https://astrology-api-ng94.onrender.com/calculate";
-        const COUNTRY_NAME = "INDIA";
+    <div class="dasa">
+        <b>DASA DETAILS</b>
+        <div id="dasa"></div>
+    </div>
 
-        function pad2(v) {
-            return String(v).padStart(2, "0");
-        }
+</div>
 
-        function safeValue(v, fallback = "N/A") {
-            return (v === undefined || v === null || v === "") ? fallback : v;
-        }
+</div>
 
-        function buildDob() {
-            const day = pad2(document.getElementById("day").value.trim());
-            const month = pad2(document.getElementById("month").value.trim());
-            const year = document.getElementById("year").value.trim();
-            return `${year}-${month}-${day}`;
-        }
+<script src="india_locations.js"></script>
 
-        function buildTob() {
-            const hour = pad2(document.getElementById("hour").value.trim());
-            const minute = pad2(document.getElementById("minute").value.trim());
-            return `${hour}:${minute}`;
-        }
+<script>
 
-        function loadStates() {
-            const stateSelect = document.getElementById("state");
-            stateSelect.innerHTML = '<option value="">SELECT STATE</option>';
+const API = "https://astrology-api-ng94.onrender.com/calculate";
 
-            const states = Object.keys(INDIA_LOCATIONS).sort();
-            for (const state of states) {
-                const option = document.createElement("option");
-                option.value = state;
-                option.textContent = state;
-                stateSelect.appendChild(option);
-            }
-        }
+function loadStates() {
+    let s = document.getElementById("state");
+    s.innerHTML = "<option>STATE</option>";
 
-        function loadCities() {
-            const state = document.getElementById("state").value;
-            const citySelect = document.getElementById("city");
-            citySelect.innerHTML = '<option value="">SELECT CITY</option>';
+    Object.keys(INDIA_LOCATIONS).forEach(st => {
+        let o = document.createElement("option");
+        o.value = st;
+        o.textContent = st;
+        s.appendChild(o);
+    });
+}
 
-            if (!state || !INDIA_LOCATIONS[state]) return;
+function loadCities() {
+    let st = document.getElementById("state").value;
+    let c = document.getElementById("city");
 
-            const cities = INDIA_LOCATIONS[state].sort();
-            for (const city of cities) {
-                const option = document.createElement("option");
-                option.value = city;
-                option.textContent = city;
-                citySelect.appendChild(option);
-            }
-        }
+    c.innerHTML = "<option>CITY</option>";
 
-        async function getCoordinates(city, state) {
-            const query = `${city}, ${state}, ${COUNTRY_NAME}`;
-            const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(query);
+    INDIA_LOCATIONS[st].forEach(city => {
+        let o = document.createElement("option");
+        o.value = city;
+        o.textContent = city;
+        c.appendChild(o);
+    });
+}
 
-            const response = await fetch(url);
-            const data = await response.json();
+async function calculate() {
 
-            if (!data || data.length === 0) {
-                throw new Error("CITY / STATE NOT FOUND.");
-            }
+    let dob = document.getElementById("year").value + "-" +
+              document.getElementById("month").value + "-" +
+              document.getElementById("day").value;
 
-            return {
-                lat: parseFloat(data[0].lat),
-                lon: parseFloat(data[0].lon)
-            };
-        }
+    let tob = document.getElementById("hour").value + ":" +
+              document.getElementById("minute").value;
 
-        function getCurrentRange(items) {
-            if (!items || !items.length) return null;
-            const now = new Date();
+    let city = document.getElementById("city").value;
+    let state = document.getElementById("state").value;
 
-            for (const item of items) {
-                const start = new Date(item.start);
-                const end = new Date(item.end);
-                if (now >= start && now <= end) return item;
-            }
+    let geo = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city},${state}`);
+    let g = await geo.json();
 
-            return items[0];
-        }
+    let lat = g[0].lat;
+    let lon = g[0].lon;
 
-        function renderSummary(data, personName, birthPlace, dob, tob) {
-            const currentMaha = getCurrentRange(data.mahadasha_sequence);
-            const currentAntar = getCurrentRange(data.remaining_antardasha_sequence);
+    let res = await fetch(API, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            dob: dob,
+            tob: tob,
+            tz: 5.5,
+            lat: lat,
+            lon: lon
+        })
+    });
 
-            const rows = [
-                ["NAME", personName || "N/A"],
-                ["DATE OF BIRTH", dob],
-                ["TIME OF BIRTH", tob],
-                ["PLACE OF BIRTH", birthPlace],
-                ["LAGNA", `${safeValue(data.lagna?.sign)} ${safeValue(data.lagna?.degree_in_sign)}°`],
-                ["MOON SIGN", safeValue(data.graha_positions?.Moon?.sign)],
-                ["NAKSHATRA", safeValue(data.core_result?.nakshatra)],
-                ["NAKSHATRA LORD", safeValue(data.core_result?.dasha_lord)],
-                ["BALANCE OF DASA", `${safeValue(data.core_result?.balance?.years, 0)}Y ${safeValue(data.core_result?.balance?.months, 0)}M ${safeValue(data.core_result?.balance?.days, 0)}D`],
-                ["CURRENT MAHADASHA", currentMaha ? currentMaha.lord : "N/A"],
-                ["CURRENT ANTARDASHA", currentAntar ? currentAntar.lord : "N/A"],
-                ["MOON LONGITUDE", safeValue(data.core_result?.moon_longitude)]
-            ];
+    let data = await res.json();
 
-            return rows.map(([k, v]) => `
-                <div class="summary-row">
-                    <div class="summary-label">${k}</div>
-                    <div>:</div>
-                    <div>${v}</div>
-                </div>
-            `).join("");
-        }
+    renderSummary(data);
+    renderPlanets(data);
+    renderChart(data);
+    renderDasa(data);
+}
 
-        function renderPlanetTable(data) {
-            const planets = data.graha_positions || {};
+function renderSummary(d) {
+    let html = `
+    <div class="summary-row"><div>NAKSHATRA</div><div>${d.nakshatra}</div></div>
+    <div class="summary-row"><div>DASA LORD</div><div>${d.dasha_lord}</div></div>
+    <div class="summary-row"><div>LAGNA</div><div>${d.lagna.sign}</div></div>
+    `;
+    document.getElementById("summary").innerHTML = html;
+}
 
-            const rows = Object.entries(planets).map(([planet, p]) => `
-                <tr>
-                    <td>${planet}</td>
-                    <td>${safeValue(p.longitude)}°</td>
-                    <td>${safeValue(p.sign)}</td>
-                    <td>${safeValue(p.degree_in_sign)}°</td>
-                    <td>${safeValue(p.nakshatra)}</td>
-                    <td>${safeValue(p.nakshatra_lord)}</td>
-                </tr>
-            `).join("");
+function renderPlanets(d) {
+    let html = "<table><tr><th>PLANET</th><th>SIGN</th></tr>";
 
-            return `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>PLANET</th>
-                            <th>LONGITUDE</th>
-                            <th>SIGN</th>
-                            <th>SIGN DEGREE</th>
-                            <th>NAKSHATRA</th>
-                            <th>NAKSHATRA LORD</th>
-                        </tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>
-            `;
-        }
+    for (let p in d.graha_positions) {
+        html += `<tr><td>${p}</td><td>${d.graha_positions[p].sign}</td></tr>`;
+    }
 
-        function renderDasaPanel(data) {
-            const currentMaha = getCurrentRange(data.mahadasha_sequence);
-            const currentAntar = getCurrentRange(data.remaining_antardasha_sequence);
+    html += "</table>";
+    document.getElementById("planets").innerHTML = html;
+}
 
-            return `
-                <table class="dasa-table">
-                    <tbody>
-                        <tr><th>FIELD</th><th>VALUE</th></tr>
-                        <tr><td>PRESENT DASA RUNNING</td><td>${currentMaha ? currentMaha.lord : "N/A"}</td></tr>
-                        <tr><td>CURRENT ANTARDASA</td><td>${currentAntar ? currentAntar.lord : "N/A"}</td></tr>
-                        <tr><td>BALANCE OF VIMSHOTTARI DASA</td><td>${safeValue(data.core_result?.balance?.years, 0)}Y ${safeValue(data.core_result?.balance?.months, 0)}M ${safeValue(data.core_result?.balance?.days, 0)}D</td></tr>
-                        <tr><td>MAHADASHA LORD</td><td>${safeValue(data.core_result?.dasha_lord)}</td></tr>
-                    </tbody>
-                </table>
-            `;
-        }
+function renderChart(d) {
+    let signs = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+    let html = "";
 
-        function renderMahaTable(data) {
-            const seq = data.mahadasha_sequence || [];
-            const rows = seq.map(item => `
-                <tr>
-                    <td>${item.lord}</td>
-                    <td>${item.start}</td>
-                    <td>${item.end}</td>
-                </tr>
-            `).join("");
+    signs.forEach(s => {
+        let content = d.chart[s] || [];
+        let lagna = content.includes("Lagna") ? "lagna" : "";
 
-            return `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>LORD</th>
-                            <th>START</th>
-                            <th>END</th>
-                        </tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>
-            `;
-        }
+        html += `<div class="house ${lagna}">${s}<br>${content}</div>`;
+    });
 
-        function renderAntarTable(data) {
-            const seq = data.remaining_antardasha_sequence || [];
-            const rows = seq.map(item => `
-                <tr>
-                    <td>${item.lord}</td>
-                    <td>${item.start}</td>
-                    <td>${item.end}</td>
-                </tr>
-            `).join("");
+    document.getElementById("chart").innerHTML = html;
+}
 
-            return `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>LORD</th>
-                            <th>START</th>
-                            <th>END</th>
-                        </tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>
-            `;
-        }
+function renderDasa(d) {
+    let html = `
+    BALANCE: ${d.balance.years}Y ${d.balance.months}M ${d.balance.days}D
+    `;
+    document.getElementById("dasa").innerHTML = html;
+}
 
-        function renderChart(data) {
-            const chart = data.chart || {};
-            const signOrder = [
-                "ARIES", "TAURUS", "GEMINI", "CANCER",
-                "LEO", "VIRGO", "LIBRA", "SCORPIO",
-                "SAGITTARIUS", "CAPRICORN", "AQUARIUS", "PISCES"
-            ];
+loadStates();
 
-            return signOrder.map(sign => {
-                const key = sign.charAt(0) + sign.slice(1).toLowerCase();
-                const content = chart[key] || [];
-                const isLagna = content.includes("Lagna");
+</script>
 
-                return `
-                    <div class="house ${isLagna ? 'lagna-house' : ''}">
-                        <div class="house-sign">${sign}</div>
-                        <div>${content.length ? content.join(", ") : "-"}</div>
-                    </div>
-                `;
-            }).join("");
-        }
-
-        async function calculateHoroscope() {
-            const statusBar = document.getElementById("statusBar");
-            const name = document.getElementById("name").value.trim();
-            const state = document.getElementById("state").value.trim();
-            const city = document.getElementById("city").value.trim();
-
-            try {
-                if (!document.getElementById("day").value.trim() ||
-                    !document.getElementById("month").value.trim() ||
-                    !document.getElementById("year").value.trim() ||
-                    !document.getElementById("hour").value.trim() ||
-                    !document.getElementById("minute").value.trim() ||
-                    !state || !city) {
-                    throw new Error("PLEASE ENTER ALL REQUIRED FIELDS.");
-                }
-
-                const dob = buildDob();
-                const tob = buildTob();
-                const birthPlace = `${city}, ${state}, INDIA`;
-
-                statusBar.textContent = "FETCHING LOCATION...";
-                const coords = await getCoordinates(city, state);
-
-                statusBar.textContent = "GENERATING HOROSCOPE...";
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        dob: dob,
-                        tob: tob,
-                        tz: 5.5,
-                        lat: coords.lat,
-                        lon: coords.lon
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!data.core_result) {
-                    throw new Error("INVALID RESPONSE FROM SERVER.");
-                }
-
-                document.getElementById("summaryPanel").innerHTML = renderSummary(data, name, birthPlace, dob, tob);
-                document.getElementById("planetTable").innerHTML = renderPlanetTable(data);
-                document.getElementById("dasaPanel").innerHTML = renderDasaPanel(data);
-                document.getElementById("mahadashaTable").innerHTML = renderMahaTable(data);
-                document.getElementById("antardashaTable").innerHTML = renderAntarTable(data);
-                document.getElementById("chartPanel").innerHTML = renderChart(data);
-
-                statusBar.textContent = "HOROSCOPE GENERATED SUCCESSFULLY.";
-            } catch (error) {
-                statusBar.textContent = "ERROR: " + error.message;
-                document.getElementById("summaryPanel").innerHTML = "";
-                document.getElementById("planetTable").innerHTML = "";
-                document.getElementById("dasaPanel").innerHTML = "";
-                document.getElementById("mahadashaTable").innerHTML = "";
-                document.getElementById("antardashaTable").innerHTML = "";
-                document.getElementById("chartPanel").innerHTML = "";
-            }
-        }
-
-        window.onload = loadStates;
-    </script>
 </body>
 </html>
