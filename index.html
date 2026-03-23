@@ -73,7 +73,6 @@
         .result h3 {
             color: #facc15;
         }
-
     </style>
 </head>
 
@@ -98,6 +97,7 @@
     </div>
 
 <script>
+
 async function getCoordinates(city, state, country) {
     let query = city + "," + state + "," + country;
 
@@ -107,6 +107,10 @@ async function getCoordinates(city, state, country) {
 
     let data = await res.json();
 
+    if (!data || data.length === 0) {
+        throw new Error("Location not found. Please check city/state.");
+    }
+
     return {
         lat: parseFloat(data[0].lat),
         lon: parseFloat(data[0].lon)
@@ -114,6 +118,7 @@ async function getCoordinates(city, state, country) {
 }
 
 async function calculate() {
+
     let dob = document.getElementById("dob").value;
     let tob = document.getElementById("tob").value;
 
@@ -125,6 +130,7 @@ async function calculate() {
     resultDiv.innerHTML = "🔄 Calculating...";
 
     try {
+
         let coords = await getCoordinates(city, state, country);
 
         let response = await fetch("https://astrology-api-ng94.onrender.com/calculate", {
@@ -143,19 +149,29 @@ async function calculate() {
 
         let data = await response.json();
 
+        if (!data.core_result) {
+            throw new Error("Invalid response from server");
+        }
+
         resultDiv.innerHTML = `
             <h3>🌟 Horoscope Result</h3>
             <b>Moon Longitude:</b> ${data.core_result.moon_longitude}<br>
             <b>Nakshatra:</b> ${data.core_result.nakshatra}<br>
             <b>Dasha Lord:</b> ${data.core_result.dasha_lord}<br>
-            <b>Balance:</b> ${data.core_result.balance.years}y ${data.core_result.balance.months}m ${data.core_result.balance.days}d<br>
-            <b>Lagna:</b> ${data.lagna.sign} ${data.lagna.degree_in_sign}°
+            <b>Balance:</b> ${data.core_result.balance.years}y 
+                            ${data.core_result.balance.months}m 
+                            ${data.core_result.balance.days}d<br><br>
+
+            <h3>🧭 Lagna</h3>
+            <b>Sign:</b> ${data.lagna.sign}<br>
+            <b>Degree:</b> ${data.lagna.degree_in_sign}°
         `;
 
     } catch (err) {
         resultDiv.innerHTML = "❌ Error: " + err.message;
     }
 }
+
 </script>
 
 </body>
