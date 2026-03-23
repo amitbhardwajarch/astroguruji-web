@@ -139,12 +139,6 @@
             margin-bottom: 6px;
         }
 
-        .helper {
-            color: #cbd5f5;
-            font-size: 13px;
-            margin-top: 8px;
-        }
-
         @media (max-width: 700px) {
             .two-col,
             .chart-grid {
@@ -165,12 +159,8 @@
             <input type="date" id="dob">
             <input type="time" id="tob">
 
-            <select id="state" onchange="loadDistricts()">
+            <select id="state" onchange="loadCities()">
                 <option value="">Select State</option>
-            </select>
-
-            <select id="district" onchange="loadCities()">
-                <option value="">Select District</option>
             </select>
 
             <select id="city">
@@ -178,7 +168,6 @@
             </select>
 
             <button onclick="calculate()">✨ Calculate Horoscope</button>
-            <div class="helper">Country is fixed as India for this MVP.</div>
         </div>
 
         <div class="result" id="result">Please enter details and click Calculate Horoscope.</div>
@@ -203,35 +192,15 @@
             }
         }
 
-        function loadDistricts() {
+        function loadCities() {
             const state = document.getElementById("state").value;
-            const districtSelect = document.getElementById("district");
             const citySelect = document.getElementById("city");
 
-            districtSelect.innerHTML = '<option value="">Select District</option>';
             citySelect.innerHTML = '<option value="">Select City</option>';
 
             if (!state || !INDIA_LOCATIONS[state]) return;
 
-            const districts = Object.keys(INDIA_LOCATIONS[state]).sort();
-            for (const district of districts) {
-                const option = document.createElement("option");
-                option.value = district;
-                option.textContent = district;
-                districtSelect.appendChild(option);
-            }
-        }
-
-        function loadCities() {
-            const state = document.getElementById("state").value;
-            const district = document.getElementById("district").value;
-            const citySelect = document.getElementById("city");
-
-            citySelect.innerHTML = '<option value="">Select City</option>';
-
-            if (!state || !district || !INDIA_LOCATIONS[state] || !INDIA_LOCATIONS[state][district]) return;
-
-            const cities = INDIA_LOCATIONS[state][district].sort();
+            const cities = INDIA_LOCATIONS[state].sort();
             for (const city of cities) {
                 const option = document.createElement("option");
                 option.value = city;
@@ -240,8 +209,8 @@
             }
         }
 
-        async function getCoordinates(city, district, state) {
-            const query = `${city}, ${district}, ${state}, ${COUNTRY_NAME}`;
+        async function getCoordinates(city, state) {
+            const query = `${city}, ${state}, ${COUNTRY_NAME}`;
             const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(query);
 
             const response = await fetch(url);
@@ -362,18 +331,17 @@
             const dob = document.getElementById("dob").value;
             const tob = document.getElementById("tob").value;
             const state = document.getElementById("state").value;
-            const district = document.getElementById("district").value;
             const city = document.getElementById("city").value;
 
             const resultDiv = document.getElementById("result");
             resultDiv.innerHTML = "🔄 Calculating...";
 
             try {
-                if (!dob || !tob || !state || !district || !city) {
-                    throw new Error("Please select DOB, Time, State, District, and City.");
+                if (!dob || !tob || !state || !city) {
+                    throw new Error("Please select DOB, Time, State, and City.");
                 }
 
-                const coords = await getCoordinates(city, district, state);
+                const coords = await getCoordinates(city, state);
 
                 const response = await fetch(API_URL, {
                     method: "POST",
@@ -412,7 +380,7 @@
                             <div><b>Sign:</b> ${data.lagna.sign}</div>
                             <div><b>Degree:</b> ${data.lagna.degree_in_sign}°</div>
                             <div><b>Absolute Longitude:</b> ${data.lagna.longitude}°</div>
-                            <div><b>Birth Place:</b> ${city}, ${district}, ${state}, India</div>
+                            <div><b>Birth Place:</b> ${city}, ${state}, India</div>
                         </div>
                     </div>
 
@@ -427,7 +395,7 @@
             }
         }
 
-        window.onload = loadIndiaData;
+        window.onload = loadStates;
     </script>
 
 </body>
