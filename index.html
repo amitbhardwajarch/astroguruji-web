@@ -35,7 +35,6 @@
             padding: 20px;
             background: rgba(30, 41, 59, 0.92);
             border-radius: 16px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.45);
         }
 
         .form-box {
@@ -50,7 +49,6 @@
             border-radius: 8px;
             border: none;
             font-size: 14px;
-            box-sizing: border-box;
         }
 
         input, select {
@@ -65,338 +63,159 @@
             cursor: pointer;
         }
 
-        button:hover {
-            opacity: 0.92;
-        }
-
         .result {
-            margin-top: 24px;
+            margin-top: 20px;
             text-align: left;
             background: #020617;
-            padding: 18px;
+            padding: 15px;
             border-radius: 10px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .section {
-            margin-bottom: 24px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .section:last-child {
-            border-bottom: none;
-        }
-
-        .section h3 {
-            color: #facc15;
-            margin-bottom: 10px;
-        }
-
-        .two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-        }
-
-        th, td {
-            border: 1px solid rgba(255,255,255,0.12);
-            padding: 8px;
-            text-align: left;
-            font-size: 13px;
-        }
-
-        th {
-            background: #1e293b;
-            color: #facc15;
-        }
-
-        .chart-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .chart-box {
-            background: #0f172a;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 8px;
-            padding: 10px;
-            min-height: 70px;
-        }
-
-        .chart-box .sign {
-            color: #facc15;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-
-        @media (max-width: 700px) {
-            .two-col,
-            .chart-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="logo">🔮 AstroGuruji</div>
-    <div class="tagline">Ancient Wisdom • Modern Technology</div>
+<div class="logo">🔮 AstroGuruji</div>
+<div class="tagline">Ancient Wisdom • Modern Technology</div>
 
-    <div class="container">
+<div class="container">
 
-        <div class="form-box">
-            <input type="date" id="dob">
-            <input type="time" id="tob">
+    <div class="form-box">
+        <input type="date" id="dob">
+        <input type="time" id="tob">
 
-            <select id="state" onchange="loadCities()">
-                <option value="">Select State</option>
-            </select>
+        <select id="state" onchange="loadCities()">
+            <option>Select State</option>
+        </select>
 
-            <select id="city">
-                <option value="">Select City</option>
-            </select>
+        <select id="city">
+            <option>Select City</option>
+        </select>
 
-            <button onclick="calculate()">✨ Calculate Horoscope</button>
-        </div>
-
-        <div class="result" id="result">Please enter details and click Calculate Horoscope.</div>
-
+        <button onclick="calculate()">✨ Calculate Horoscope</button>
     </div>
 
-    <script src="india_locations.js"></script>
-    <script>
-        const API_URL = "https://astrology-api-ng94.onrender.com/calculate";
-        const COUNTRY_NAME = "India";
+    <div class="result" id="result">Loading India data...</div>
 
-        function loadStates() {
-            const stateSelect = document.getElementById("state");
-            stateSelect.innerHTML = '<option value="">Select State</option>';
+</div>
 
-            const states = Object.keys(INDIA_LOCATIONS).sort();
-            for (const state of states) {
-                const option = document.createElement("option");
-                option.value = state;
-                option.textContent = state;
-                stateSelect.appendChild(option);
-            }
-        }
+<script>
 
-        function loadCities() {
-            const state = document.getElementById("state").value;
-            const citySelect = document.getElementById("city");
+const API_URL = "https://astrology-api-ng94.onrender.com/calculate";
+let allStates = [];
 
-            citySelect.innerHTML = '<option value="">Select City</option>';
+// 🚀 Load full India dataset
+async function loadData() {
+    try {
+        const res = await fetch("https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/countries+states+cities.json");
+        const data = await res.json();
 
-            if (!state || !INDIA_LOCATIONS[state]) return;
+        const india = data.find(c => c.name === "India");
+        allStates = india.states;
 
-            const cities = INDIA_LOCATIONS[state].sort();
-            for (const city of cities) {
-                const option = document.createElement("option");
-                option.value = city;
-                option.textContent = city;
-                citySelect.appendChild(option);
-            }
-        }
+        loadStates();
 
-        async function getCoordinates(city, state) {
-            const query = `${city}, ${state}, ${COUNTRY_NAME}`;
-            const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(query);
+        document.getElementById("result").innerHTML = "Ready ✔ Select your details";
 
-            const response = await fetch(url);
-            const data = await response.json();
+    } catch (err) {
+        document.getElementById("result").innerHTML = "Error loading India data";
+    }
+}
 
-            if (!data || data.length === 0) {
-                throw new Error("Coordinates not found for selected city.");
-            }
+// Load states
+function loadStates() {
+    const stateSelect = document.getElementById("state");
+    stateSelect.innerHTML = '<option>Select State</option>';
 
-            return {
-                lat: parseFloat(data[0].lat),
-                lon: parseFloat(data[0].lon)
-            };
-        }
+    allStates.forEach(state => {
+        let opt = document.createElement("option");
+        opt.value = state.name;
+        opt.textContent = state.name;
+        stateSelect.appendChild(opt);
+    });
+}
 
-        function renderGrahaPositions(grahaPositions) {
-            const rows = Object.entries(grahaPositions).map(([graha, data]) => `
-                <tr>
-                    <td>${graha}</td>
-                    <td>${data.sign}</td>
-                    <td>${data.degree_in_sign}°</td>
-                    <td>${data.longitude}°</td>
-                </tr>
-            `).join("");
+// Load cities
+function loadCities() {
+    const stateName = document.getElementById("state").value;
+    const citySelect = document.getElementById("city");
 
-            return `
-                <div class="section">
-                    <h3>🪐 Graha Positions</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Graha</th>
-                                <th>Sign</th>
-                                <th>Degree in Sign</th>
-                                <th>Absolute Longitude</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>
-            `;
-        }
+    citySelect.innerHTML = '<option>Select City</option>';
 
-        function renderMahadasha(mahadashaSequence) {
-            const rows = mahadashaSequence.map(item => `
-                <tr>
-                    <td>${item.lord}</td>
-                    <td>${item.start}</td>
-                    <td>${item.end}</td>
-                </tr>
-            `).join("");
+    const state = allStates.find(s => s.name === stateName);
+    if (!state) return;
 
-            return `
-                <div class="section">
-                    <h3>📜 Mahadasha Sequence</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Lord</th>
-                                <th>Start</th>
-                                <th>End</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>
-            `;
-        }
+    state.cities.forEach(city => {
+        let opt = document.createElement("option");
+        opt.value = city.name;
+        opt.textContent = city.name;
+        citySelect.appendChild(opt);
+    });
+}
 
-        function renderAntardasha(antardashaSequence) {
-            const rows = antardashaSequence.map(item => `
-                <tr>
-                    <td>${item.lord}</td>
-                    <td>${item.start}</td>
-                    <td>${item.end}</td>
-                </tr>
-            `).join("");
+// Get coordinates
+async function getCoordinates(city, state) {
+    const query = `${city}, ${state}, India`;
 
-            return `
-                <div class="section">
-                    <h3>⏳ Remaining Antardasha Sequence At Birth</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Lord</th>
-                                <th>Start</th>
-                                <th>End</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>
-            `;
-        }
+    const res = await fetch(
+        "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(query)
+    );
 
-        function renderChart(chart) {
-            const signOrder = [
-                "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
-                "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
-            ];
+    const data = await res.json();
 
-            const boxes = signOrder.map(sign => `
-                <div class="chart-box">
-                    <div class="sign">${sign}</div>
-                    <div>${chart[sign] && chart[sign].length ? chart[sign].join(", ") : "-"}</div>
-                </div>
-            `).join("");
+    if (!data.length) throw new Error("Location not found");
 
-            return `
-                <div class="section">
-                    <h3>🧭 Sign-wise Chart Placement</h3>
-                    <div class="chart-grid">${boxes}</div>
-                </div>
-            `;
-        }
+    return {
+        lat: parseFloat(data[0].lat),
+        lon: parseFloat(data[0].lon)
+    };
+}
 
-        async function calculate() {
-            const dob = document.getElementById("dob").value;
-            const tob = document.getElementById("tob").value;
-            const state = document.getElementById("state").value;
-            const city = document.getElementById("city").value;
+// Calculate horoscope
+async function calculate() {
+    const dob = document.getElementById("dob").value;
+    const tob = document.getElementById("tob").value;
+    const state = document.getElementById("state").value;
+    const city = document.getElementById("city").value;
 
-            const resultDiv = document.getElementById("result");
-            resultDiv.innerHTML = "🔄 Calculating...";
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = "🔄 Calculating...";
 
-            try {
-                if (!dob || !tob || !state || !city) {
-                    throw new Error("Please select DOB, Time, State, and City.");
-                }
+    try {
+        const coords = await getCoordinates(city, state);
 
-                const coords = await getCoordinates(city, state);
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                dob, tob,
+                tz: 5.5,
+                lat: coords.lat,
+                lon: coords.lon
+            })
+        });
 
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        dob: dob,
-                        tob: tob,
-                        tz: 5.5,
-                        lat: coords.lat,
-                        lon: coords.lon
-                    })
-                });
+        const data = await res.json();
 
-                const data = await response.json();
+        resultDiv.innerHTML = `
+            <h3>🌟 Result</h3>
+            Moon Longitude: ${data.core_result.moon_longitude}<br>
+            Nakshatra: ${data.core_result.nakshatra}<br>
+            Dasha Lord: ${data.core_result.dasha_lord}<br>
+            Balance: ${data.core_result.balance.years}y 
+                     ${data.core_result.balance.months}m 
+                     ${data.core_result.balance.days}d
+        `;
 
-                if (!data.core_result) {
-                    throw new Error("Invalid response from server.");
-                }
+    } catch (e) {
+        resultDiv.innerHTML = "❌ Error: " + e.message;
+    }
+}
 
-                resultDiv.innerHTML = `
-                    <div class="section">
-                        <h3>🌟 Core Result</h3>
-                        <div class="two-col">
-                            <div><b>Moon Longitude:</b> ${data.core_result.moon_longitude}</div>
-                            <div><b>Nakshatra:</b> ${data.core_result.nakshatra}</div>
-                            <div><b>Dasha Lord:</b> ${data.core_result.dasha_lord}</div>
-                            <div><b>Balance:</b> ${data.core_result.balance.years}y ${data.core_result.balance.months}m ${data.core_result.balance.days}d</div>
-                        </div>
-                    </div>
+// Load on start
+window.onload = loadData;
 
-                    <div class="section">
-                        <h3>🧭 Lagna</h3>
-                        <div class="two-col">
-                            <div><b>Sign:</b> ${data.lagna.sign}</div>
-                            <div><b>Degree:</b> ${data.lagna.degree_in_sign}°</div>
-                            <div><b>Absolute Longitude:</b> ${data.lagna.longitude}°</div>
-                            <div><b>Birth Place:</b> ${city}, ${state}, India</div>
-                        </div>
-                    </div>
-
-                    ${renderGrahaPositions(data.graha_positions)}
-                    ${renderMahadasha(data.mahadasha_sequence)}
-                    ${renderAntardasha(data.remaining_antardasha_sequence)}
-                    ${renderChart(data.chart)}
-                `;
-
-            } catch (error) {
-                resultDiv.innerHTML = "❌ Error: " + error.message;
-            }
-        }
-
-        window.onload = loadStates;
-    </script>
+</script>
 
 </body>
 </html>
