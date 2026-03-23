@@ -114,7 +114,6 @@ async function getCoordinates(city, state, country) {
 }
 
 async function calculate() {
-
     let dob = document.getElementById("dob").value;
     let tob = document.getElementById("tob").value;
 
@@ -126,7 +125,6 @@ async function calculate() {
     resultDiv.innerHTML = "🔄 Calculating...";
 
     try {
-
         let coords = await getCoordinates(city, state, country);
 
         let response = await fetch("https://astrology-api-ng94.onrender.com/calculate", {
@@ -137,7 +135,7 @@ async function calculate() {
             body: JSON.stringify({
                 dob: dob,
                 tob: tob,
-                timezone: 5.5,
+                tz: 5.5,
                 lat: coords.lat,
                 lon: coords.lon
             })
@@ -147,14 +145,15 @@ async function calculate() {
 
         resultDiv.innerHTML = `
             <h3>🌟 Horoscope Result</h3>
-            <b>Moon Longitude:</b> ${data.moon_longitude}<br>
-            <b>Nakshatra:</b> ${data.nakshatra}<br>
-            <b>Dasha Lord:</b> ${data.dasha_lord}<br>
-            <b>Balance:</b> ${data.balance.years}y ${data.balance.months}m ${data.balance.days}d
+            <b>Moon Longitude:</b> ${data.core_result.moon_longitude}<br>
+            <b>Nakshatra:</b> ${data.core_result.nakshatra}<br>
+            <b>Dasha Lord:</b> ${data.core_result.dasha_lord}<br>
+            <b>Balance:</b> ${data.core_result.balance.years}y ${data.core_result.balance.months}m ${data.core_result.balance.days}d<br>
+            <b>Lagna:</b> ${data.lagna.sign} ${data.lagna.degree_in_sign}°
         `;
 
     } catch (err) {
-        resultDiv.innerHTML = "❌ Error: " + err;
+        resultDiv.innerHTML = "❌ Error: " + err.message;
     }
 }
 </script>
