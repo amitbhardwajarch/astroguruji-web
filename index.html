@@ -1,99 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
 <title>ASTROGURUJI</title>
 
 <style>
-body {
-    font-family: Arial;
-    margin: 0;
-    background: #eee;
-    text-transform: uppercase;
-}
-
-.container {
-    width: 1200px;
-    margin: auto;
-    background: white;
-    border: 2px solid black;
-    padding: 10px;
-}
-
-/* HEADER */
-.header {
-    text-align: center;
-    border-bottom: 2px solid black;
-    padding-bottom: 5px;
-}
-
-.header h1 {
-    margin: 0;
-}
-
-/* INPUT */
-.row {
-    display: flex;
-    gap: 5px;
-    margin-top: 8px;
-}
-
-input, select {
-    padding: 5px;
-    border: 1px solid black;
-}
-
-button {
-    background: gold;
-    border: 1px solid black;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* SECTION */
-.section {
-    border: 1px solid black;
-    margin-top: 10px;
-    padding: 5px;
-}
-
-/* TABLE */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    border: 1px solid black;
-    padding: 4px;
-    font-size: 12px;
-}
-
-/* BOTTOM */
-.bottom {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-
-/* CHART */
-.chart-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-}
-
-.house {
-    border: 1px solid black;
-    height: 70px;
-    font-size: 11px;
-    padding: 3px;
-}
-
-.lagna {
-    background: #ffe08a;
-}
-
+body { font-family: Arial; background:#eee; text-transform:uppercase; }
+.container { width:1200px; margin:auto; background:white; border:2px solid black; padding:10px; }
+.header { text-align:center; border-bottom:2px solid black; }
+.row { display:flex; gap:5px; margin-top:5px; }
+input,select { border:1px solid black; padding:5px; }
+button { background:gold; font-weight:bold; border:1px solid black; }
+.section { border:1px solid black; margin-top:10px; padding:5px; }
+.chart { display:grid; grid-template-columns:repeat(4,1fr); }
+.house { border:1px solid black; height:70px; font-size:11px; }
 </style>
+
 </head>
 
 <body>
@@ -101,172 +22,97 @@ th, td {
 <div class="container">
 
 <div class="header">
-    <h1>ASTROGURUJI</h1>
-    <div>INSTANT HOROSCOPE DISPLAY</div>
+<h2>ASTROGURUJI</h2>
 </div>
 
 <div class="row">
-    <input id="name" placeholder="NAME">
-    <input id="day" placeholder="DD">
-    <input id="month" placeholder="MM">
-    <input id="year" placeholder="YYYY">
-    <input id="hour" placeholder="HH">
-    <input id="minute" placeholder="MM">
+<input id="name" placeholder="NAME">
+<input id="day" placeholder="DD">
+<input id="month" placeholder="MM">
+<input id="year" placeholder="YYYY">
+<input id="hour" placeholder="HH">
+<input id="minute" placeholder="MM">
 
-    <select id="state"></select>
-    <select id="city"></select>
+<select id="state"></select>
+<select id="city"></select>
 
-    <button onclick="calculate()">SHOW</button>
+<button onclick="calc()">SHOW</button>
 </div>
 
-<div class="section">
-    <b>HOROSCOPE SUMMARY</b>
-    <div id="summary"></div>
-</div>
-
-<div class="section">
-    <b>NINE PLANETS POSITION</b>
-    <div id="planets"></div>
-</div>
-
-<div class="bottom">
-
-    <div class="section">
-        <b>RASI CHART</b>
-        <div id="chart" class="chart-grid"></div>
-    </div>
-
-    <div class="section">
-        <b>DASA DETAILS</b>
-        <div id="dasa"></div>
-    </div>
-
-</div>
+<div class="section" id="summary"></div>
+<div class="section" id="planets"></div>
+<div class="section chart" id="chart"></div>
 
 </div>
 
 <script>
 
-const API = "http://127.0.0.1:8000";
+const API="https://astrology-api-ng94.onrender.com";
 
-/* LOAD STATES */
-async function loadStates() {
-    let res = await fetch(API + "/locations/states");
-    let states = await res.json();
+/* STATES */
+async function loadStates(){
+let r=await fetch(API+"/locations/states");
+let d=await r.json();
 
-    let s = document.getElementById("state");
-    s.innerHTML = "<option>STATE</option>";
-
-    states.forEach(st => {
-        let o = document.createElement("option");
-        o.value = st;
-        o.textContent = st;
-        s.appendChild(o);
-    });
+let s=document.getElementById("state");
+d.forEach(st=>{
+let o=document.createElement("option");
+o.value=st;
+o.text=st;
+s.appendChild(o);
+});
 }
 
-/* LOAD CITIES */
-document.getElementById("state").addEventListener("change", async function() {
-    let state = this.value;
+/* CITIES */
+state.onchange=async function(){
+let r=await fetch(API+"/locations/cities?state="+this.value);
+let d=await r.json();
 
-    let res = await fetch(API + "/locations/cities?state=" + state);
-    let cities = await res.json();
+city.innerHTML="";
+d.forEach(c=>{
+let o=document.createElement("option");
+o.value=c;
+o.text=c;
+city.appendChild(o);
+});
+}
 
-    let c = document.getElementById("city");
-    c.innerHTML = "<option>CITY</option>";
+/* CALC */
+async function calc(){
 
-    cities.forEach(city => {
-        let o = document.createElement("option");
-        o.value = city;
-        o.textContent = city;
-        c.appendChild(o);
-    });
+let dob=`${year.value}-${month.value}-${day.value}`;
+let tob=`${hour.value}:${minute.value}`;
+
+let geo=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city.value},${state.value}`);
+let g=await geo.json();
+
+let lat=g[0].lat;
+let lon=g[0].lon;
+
+let res=await fetch(API+"/calculate",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({dob,tob,tz:5.5,lat,lon})
 });
 
-/* CALCULATE */
-async function calculate() {
+let data=await res.json();
 
-    let dob = `${year.value}-${month.value}-${day.value}`;
-    let tob = `${hour.value}:${minute.value}`;
+summary.innerHTML=`NAKSHATRA: ${data.core_result.nakshatra}<br>DASA: ${data.core_result.dasha_lord}`;
 
-    let city = document.getElementById("city").value;
-    let state = document.getElementById("state").value;
-
-    let geo = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city},${state}`);
-    let g = await geo.json();
-
-    let lat = g[0].lat;
-    let lon = g[0].lon;
-
-    let res = await fetch(API + "/calculate", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            dob: dob,
-            tob: tob,
-            tz: 5.5,
-            lat: lat,
-            lon: lon
-        })
-    });
-
-    let data = await res.json();
-
-    renderSummary(data);
-    renderPlanets(data);
-    renderChart(data);
-    renderDasa(data);
+let html="<table>";
+for(let p in data.graha_positions){
+html+=`<tr><td>${p}</td><td>${data.graha_positions[p].sign}</td></tr>`;
 }
+html+="</table>";
 
-/* SUMMARY */
-function renderSummary(d) {
-    document.getElementById("summary").innerHTML = `
-    NAKSHATRA: ${d.core_result.nakshatra}<br>
-    DASA LORD: ${d.core_result.dasha_lord}<br>
-    LAGNA: ${d.lagna.sign}
-    `;
+planets.innerHTML=html;
+
+let ch="";
+for(let s in data.chart){
+ch+=`<div class="house">${s}<br>${data.chart[s]}</div>`;
 }
+chart.innerHTML=ch;
 
-/* PLANETS */
-function renderPlanets(d) {
-    let html = "<table><tr><th>PLANET</th><th>SIGN</th><th>NAKSHATRA</th></tr>";
-
-    for (let p in d.graha_positions) {
-        let g = d.graha_positions[p];
-        html += `<tr>
-            <td>${p}</td>
-            <td>${g.sign}</td>
-            <td>${g.nakshatra}</td>
-        </tr>`;
-    }
-
-    html += "</table>";
-    document.getElementById("planets").innerHTML = html;
-}
-
-/* CHART */
-function renderChart(d) {
-    let signs = Object.keys(d.chart);
-    let html = "";
-
-    signs.forEach(s => {
-        let list = d.chart[s].join(", ");
-        let lagna = list.includes("Lagna") ? "lagna" : "";
-
-        html += `<div class="house ${lagna}">
-            ${s}<br>${list}
-        </div>`;
-    });
-
-    document.getElementById("chart").innerHTML = html;
-}
-
-/* DASA */
-function renderDasa(d) {
-    let b = d.core_result.balance;
-
-    document.getElementById("dasa").innerHTML =
-        `BALANCE: ${b.years}Y ${b.months}M ${b.days}D`;
 }
 
 loadStates();
